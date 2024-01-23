@@ -1,2 +1,2 @@
-run/godo:
-	@go run ./cmd/godo
+godo:
+	@go build main.go

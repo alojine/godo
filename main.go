@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/alojine/godo"
+	"github.com/alojine/godo/types"
 )
 
 const (
@@ -16,10 +16,11 @@ func main() {
 	add := flag.Bool("add", false, "Add a new godo task")
 	complete := flag.Int("complete", 0, "Check godo task as completed")
 	del := flag.Int("del", 0, "Delete a godo task")
+	list := flag.Bool("list", false, "List godo tasks")
 
 	flag.Parse()
 
-	godos := &godo.Godos{}
+	godos := &types.Godos{}
 
 	if err := godos.Load(godosFile); err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
@@ -28,8 +29,15 @@ func main() {
 
 	switch {
 	case *add:
-		godos.Add("make godo")
-		err := godos.Write(godosFile)
+		task, err := getInput(os.Stdin, flag.Args()...)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(0)
+		}
+
+		godos.Add(task)
+
+		err = godos.Write(godosFile)
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(0)
@@ -58,6 +66,9 @@ func main() {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(0)
 		}
+
+	case *list:
+		godos.Print()
 
 	default:
 		fmt.Fprintln(os.Stdout, "invalid command")
