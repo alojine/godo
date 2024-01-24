@@ -3,3 +3,6 @@
 
 # compiled
 godo
+
+# main
+!/cmd/godo
