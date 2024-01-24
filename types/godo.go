@@ -74,6 +74,23 @@ func (g *Godos) Load(filename string) error {
 	return nil
 }
 
+func (g *Godos) Clear() error {
+	if len(*g) == 0 {
+		return errors.New("Godos task list is empty")
+	}
+
+	var filteredGodos Godos
+	for _, item := range *g {
+		if !item.Done {
+			filteredGodos = append(filteredGodos, item)
+		}
+	}
+
+	*g = filteredGodos
+
+	return nil
+}
+
 func (g *Godos) Write(filename string) error {
 	data, err := json.Marshal(g)
 	if err != nil {
