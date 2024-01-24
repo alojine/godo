@@ -91,7 +91,7 @@ func (g *Godos) PrintTable() {
 		Cells: []*simpletable.Cell{
 			{Align: simpletable.AlignCenter, Text: "#"},
 			{Align: simpletable.AlignCenter, Text: "Task"},
-			{Align: simpletable.AlignCenter, Text: "Done"},
+			{Align: simpletable.AlignCenter, Text: "Completed?"},
 			{Align: simpletable.AlignRight, Text: "CreatedAt"},
 			{Align: simpletable.AlignRight, Text: "FinishedAt"},
 		},
@@ -101,10 +101,18 @@ func (g *Godos) PrintTable() {
 
 	for i, item := range *g {
 		i++
+
+		task := blue(item.Task)
+		done := red("No")
+		if item.Done {
+			task = green(fmt.Sprintf("\u2705 %s", item.Task))
+			done = green("Yes")
+		}
+
 		cells = append(cells, []*simpletable.Cell{
 			{Text: fmt.Sprintf("%d", i)},
-			{Text: item.Task},
-			{Text: fmt.Sprintf("%t", item.Done)},
+			{Text: task},
+			{Text: done},
 			{Text: item.CreatedAt.Format(time.RFC822)},
 			{Text: item.FinishedAt.Format(time.RFC822)},
 		})
@@ -113,9 +121,20 @@ func (g *Godos) PrintTable() {
 	table.Body = &simpletable.Body{Cells: cells}
 
 	table.Footer = &simpletable.Footer{Cells: []*simpletable.Cell{
-		{Align: simpletable.AlignCenter, Span: 5, Text: "Godos!"},
+		{Align: simpletable.AlignCenter, Span: 5, Text: red(fmt.Sprintf("%d Godos left!", g.getActiveItemSize()))},
 	}}
 
 	table.SetStyle(simpletable.StyleUnicode)
 	table.Println()
+}
+
+func (g *Godos) getActiveItemSize() int {
+	total := 0
+	for _, item := range *g {
+		if !item.Done {
+			total++
+		}
+	}
+
+	return total
 }
