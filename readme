@@ -1,0 +1,23 @@
+# GODO
+### Clean and simple go *todo-cli* app.
+
+### Clone the project
+```
+git clone https://github.com/alojine/godo.git
+```
+
+### Build the project
+```
+cd godo
+make build/godo
+```
+### Run with flags
+```
+./godo --flag
+```
+
+- **--add {Some sample text}**
+- **--complete {Index of the task that was completed}**
+- **--list**
+- **--del {Index of the task to be deleted}**
+- **--clear**
